@@ -17,7 +17,7 @@ class RecoverFees_Field extends \GF_Field {
 	}
 
 	public function get_form_editor_field_title() {
-		return esc_attr__( 'Recover Fees_test_111', 'AAAAAAAA' );
+		return esc_attr__( 'Recover Fees', 'AAAAAAAA' );
 	}
 
 	public function get_form_editor_button() {
@@ -218,7 +218,12 @@ class RecoverFees_Field extends \GF_Field {
 						// administrative should not be a visibility option for recoverfees fields
 						$( '#field_visibility_administrative, label[for="field_visibility_administrative"]' ).attr( 'style', 'display: none !important;' );
 
-					}
+					} else {
+
+				// administrative should not be a visibility option for ecommerce fields
+				$( '#field_visibility_administrative, label[for="field_visibility_administrative"]' ).attr( 'style', '' );
+
+				}
 
 					} );
 

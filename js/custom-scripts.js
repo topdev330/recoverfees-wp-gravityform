@@ -3,7 +3,7 @@
 gform.addFilter(
   'gform_product_total',
   function( total, formId ) {
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    console.log("total=====>", total);
     var recoverfeesDom = document.querySelector('#gform_wrapper_' + formId + ' .ginput_recover_fees_input');
     var recoverfeesCheckBox = document.querySelector('#gform_wrapper_' + formId + ' .recoverfeesCheck');
 
@@ -12,9 +12,15 @@ gform.addFilter(
     productsIds = JSON.parse(productsIds);
     var recoverfeesTotal = 0;
     var recoverfeesAmount = recoverfeesDom.getAttribute("data-amount");
-    for(var id of productsIds) {
-      recoverfeesTotal += gformCalculateProductPrice( formId, id ) * recoverfeesAmount / 100;
+    var productType = recoverfeesDom.getAttribute("data-productstype");
+    if(productType == 'all') {
+      recoverfeesTotal = total * recoverfeesAmount / 100;
+    } else {
+      for(var id of productsIds) {
+        recoverfeesTotal += gformCalculateProductPrice( formId, id ) * recoverfeesAmount / 100;
+      }
     }
+    
     recoverfeesDom.value = recoverfeesTotal;
 
     var event = new Event('change');
