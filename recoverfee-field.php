@@ -50,7 +50,7 @@ class RecoverFees_Field extends \GF_Field {
 							<label for='recoverFeeCheck'> Help cover our transaction fees <span>$$$</span> so that 100% of your donation goes to those in need.</label>
 							<input type='hidden' name='input_{$field_id}' id='{$html_id}' class='gform_hidden ginput_{$this->type}_input' 
 									onchange='jQuery( this ).prev().find(\"span\").text( gformFormatMoney( this.value, true ));' 
-									data-amount='{$this->{$this->type . 'Amount'}}' data-amounttype='{$this->{$this->type . 'AmountType'}}'
+									data-amount-percent='{$this->{$this->type . 'AmountPercent'}}' data-amount-dollars='{$this->{$this->type . 'AmountDollars'}}'
 									data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . json_encode( $this->{$this->type . 'Products'} ) . "' />
 					</div>";
 	}
@@ -76,7 +76,8 @@ class RecoverFees_Field extends \GF_Field {
 					<?php _e( 'Recover Fees Amount', 'recover-fees' ); ?>
 				</span>
 			</label>
-			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this);" />
+			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'percent');" />
+			<input type="text" id="recoverfees-amount-cents" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'dollars');" />
 		</li>
 
 		<li class="recoverfees-products-setting field_setting gp-field-setting" >
@@ -117,8 +118,8 @@ class RecoverFees_Field extends \GF_Field {
 						}
 
 						var type            = GetSelectedField().type,
-							amountType      = typeof amountType == 'undefined' ? 'flat' : amountType,
 							isPercentage    = type == 'recover_fees' || amount.indexOf( '%' ) != -1 || amountType == 'percent',
+							isPercentage    = amountType != 'dollars'
 							amount          = Math.abs( gformToNumber( amount ) ),
 							parsedAmount    = amount != false ? amount : 0,
 							parsedAmount    = isPercentage ? Math.min( amount, 100 ) : amount;
@@ -128,10 +129,11 @@ class RecoverFees_Field extends \GF_Field {
 						// save "clean" number
 						console.log("type=====>", type);
 						console.log("isPercentage=====>", isPercentage);
-
-						SetFieldProperty( type + 'Amount', parsedAmount );
-						SetFieldProperty( type + 'AmountType', isPercentage ? 'percent' : 'flat' );
-
+						if(amountType == "percent") {
+							SetFieldProperty( type + 'AmountPercent', parsedAmount );
+						} else if(amountType == "dollars") {
+							SetFieldProperty( type + 'AmountDollars', parsedAmount );
+						}
 						// display formatted number based on default currency
 						$input.val( formattedAmount );
 
@@ -210,7 +212,8 @@ class RecoverFees_Field extends \GF_Field {
 				$( document ).bind( 'gform_load_field_settings', function( event, field, form ) {
 					if($.inArray( field.type, [ 'recover_fees' ] ) != -1 ) {
 
-						RecoverFeesFormEditor.parseAmount( field[ field.type + 'Amount' ], $( '#recoverfees-amount-percent' ), field[ field.type + 'AmountType' ] );
+						RecoverFeesFormEditor.parseAmount( field[ field.type + 'AmountPercent' ], $( '#recoverfees-amount-percent' ), 'percent');
+						RecoverFeesFormEditor.parseAmount( field[ field.type + 'AmountDollars' ], $( '#recoverfees-amount-cents' ), 'dollars');
 						RecoverFeesFormEditor.toggleProductsType( field[ field.type + 'ProductsType' ], $( '#recoverfees-products-type' ), true );
 						RecoverFeesFormEditor.populateProducts( form, field[ field.type + 'Products' ] );
 						// RecoverFeesFormEditor.toggleLabels( field.type );

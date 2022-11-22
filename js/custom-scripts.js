@@ -11,18 +11,21 @@ gform.addFilter(
     var productsIds = recoverfeesDom.getAttribute("data-products");
     productsIds = JSON.parse(productsIds);
     var recoverfeesTotal = 0;
-    var recoverfeesAmount = recoverfeesDom.getAttribute("data-amount");
+    var recoverfeesAmount = recoverfeesDom.getAttribute("data-amount-percent");
+    var recoverfeesDollars = recoverfeesDom.getAttribute("data-amount-dollars");
+    if(!recoverfeesDollars) recoverfeesDollars = 0;
+
     var productType = recoverfeesDom.getAttribute("data-productstype");
     if(productType == 'all') {
-      recoverfeesTotal = total * recoverfeesAmount / 100;
+      recoverfeesTotal = total * recoverfeesAmount / 100 + Number(recoverfeesDollars);
     } else {
       for(var id of productsIds) {
-        recoverfeesTotal += gformCalculateProductPrice( formId, id ) * recoverfeesAmount / 100;
+        recoverfeesTotal += gformCalculateProductPrice( formId, id ) * recoverfeesAmount / 100 + Number(recoverfeesDollars);
       }
     }
     
     recoverfeesDom.value = recoverfeesTotal;
-
+    if(total == 0) recoverfeesDom.value = 0;
     var event = new Event('change');
     recoverfeesDom.dispatchEvent(event);
     // var productTotal = gformCalculateProductPrice( formId, productIds[i] );
