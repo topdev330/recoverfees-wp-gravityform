@@ -7,7 +7,7 @@ class RecoverFees_Field extends \GF_Field {
   public function run() {
 		add_action( 'gform_field_standard_settings_100', array( $this, 'field_settings_ui' ) );
 		add_action( 'gform_editor_js', array( $this, 'field_settings_js' ) );
-		add_action( 'gform_product_info', array( $this, 'add_recoverfees_to_order' ), 9, 3 );
+		// add_action( 'gform_product_info', array( $this, 'add_recoverfees_to_order' ), 9, 3 );
 		// add_action( 'admin_enqueue_scripts', array( $this, 'recoverfees_script_load')); // wp_enqueue_scripts
 		// wp_register_script( 'gwp-admin', plugin_dir_url( __FILE__ ) . 'js/custom-scripts.js' );
 
@@ -91,7 +91,6 @@ class RecoverFees_Field extends \GF_Field {
 				<select id="recoverfees-products-type" onchange="RecoverFeesFormEditor.toggleProductsType( this.value, this );">
 					<option value="all"><?php _e( 'all products', 'recover-fees' ); ?></option>
 					<option value="include"><?php _e( 'specific products', 'recover-fees' ); ?></option>
-					<option value="exclude"><?php _e( 'all products with exceptions' ); ?></option>
 				</select>
 			</div>
 
@@ -179,9 +178,9 @@ class RecoverFees_Field extends \GF_Field {
 
 						$products.html( markup ).change();
 
-						if( ! $products.data( 'asmApplied' ) ) {
-							$products.asmSelect().data( 'asmApplied', true );
-						}
+						// if( ! $products.data( 'asmApplied' ) ) {
+						// 	$products.asmSelect().data( 'asmApplied', true );
+						// }
 
 					},
 
