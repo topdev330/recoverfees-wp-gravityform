@@ -122,16 +122,6 @@ class GFRecoverFeesAddOn extends GFAddOn {
 		return $button;
 	}
 
-
-	// # ADMIN FUNCTIONS -----------------------------------------------------------------------------------------------
-
-	/**
-	 * Creates a custom page for this add-on.
-	 */
-	public function plugin_page() {
-		echo 'This page appears in the Forms menu';
-	}
-
 	/**
 	 * Configures the settings which should be rendered on the add-on settings tab.
 	 *
@@ -140,35 +130,7 @@ class GFRecoverFeesAddOn extends GFAddOn {
 	public function plugin_settings_fields() {
 		return array(
 			array(
-				'title'  => esc_html__( 'Recover Fees Settings', 'simpleaddon' ),
-				'fields' => array(
-					array(
-						'label'             => esc_html__( 'Percent', 'simpleaddon' ),
-						'type'              => 'text',
-						'name'              => 'recoverfees-settings-amount-percent',
-						'feedback_callback' => array( $this, 'is_valid_setting' ),
-					),
-					array(
-						'label'             => esc_html__( 'Dollars', 'simpleaddon' ),
-						'type'              => 'text',
-						'name'              => 'recoverfees-settings-amount-dollars',
-						'feedback_callback' => array( $this, 'is_valid_setting' ),
-					),
-					
-				),
-			),
-		);
-	}
-
-	/**
-	 * Configures the settings which should be rendered on the Form Settings > Simple Add-On tab.
-	 *
-	 * @return array
-	 */
-	public function form_settings_fields( $form ) {
-		return array(
-			array(
-				'title'  => esc_html__( 'Recover Fees Settings', 'simpleaddon' ),
+				'title'  => esc_html__( 'Default Settings', 'simpleaddon' ),
 				'fields' => array(
 					array(
 						'label'             => esc_html__( 'Percent', 'simpleaddon' ),

@@ -3,7 +3,6 @@
 gform.addFilter(
   'gform_product_total',
   function( total, formId ) {
-    console.log("total=====>", total);
     var recoverfeesDom = document.querySelector('#gform_wrapper_' + formId + ' .ginput_recover_fees_input');
     var recoverfeesCheckBox = document.querySelector('#gform_wrapper_' + formId + ' .recoverfeesCheck');
 

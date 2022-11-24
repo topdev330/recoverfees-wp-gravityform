@@ -2,18 +2,16 @@
 namespace recoverFees;
 class RecoverFees_Field extends \GF_Field {
 	public $type = 'recover_fees';
-	public $recoverfees_inputId = null;
 	protected $_slug = 'recover_fees_slug';
-	private $_processing_order = false;
   public function run() {
+
+		add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
+			echo "--------------flddd-----------";
+			echo '<pre>' . var_export($fields, true) . '</pre>';
+	}, 10, 2 );
 		add_action( 'gform_field_standard_settings_100', array( $this, 'field_settings_ui' ) );
 		add_action( 'gform_editor_js', array( $this, 'field_settings_js' ) );
-		// add_filter( 'gform_field_input', 'my_recoverfees_checkbox_function', 10, 5 );
 		add_action( 'gform_product_info', array( $this, 'add_recoverfees_to_order' ), 9, 3 );
-		// add_action( 'gform_product_info', array( $this, 'add_recoverfees_to_order' ), 9, 3 );
-		// add_action( 'admin_enqueue_scripts', array( $this, 'recoverfees_script_load')); // wp_enqueue_scripts
-		// wp_register_script( 'gwp-admin', plugin_dir_url( __FILE__ ) . 'js/custom-scripts.js' );
-		
 
 		\GF_Fields::register( new \recoverFees\RecoverFees_Field() );
 
@@ -23,6 +21,7 @@ class RecoverFees_Field extends \GF_Field {
 	public function get_form_editor_field_title() {
 		return esc_attr__( 'Recover Fees', 'Test' );
 	}
+
 
 	public function get_form_editor_button() {
 		return array(
@@ -42,7 +41,6 @@ class RecoverFees_Field extends \GF_Field {
 		if ( $is_entry_detail ) {
 			return ''; // field should not be displayed on entry detail
 		} else {
-			// $form->recoverfees_inputId = 'input_' . $id;
 			return $this->get_input_markup( $form_id, $id, $html_id );
 		}
 	}
@@ -52,13 +50,12 @@ class RecoverFees_Field extends \GF_Field {
 		<div class='ginput_container'>
 				<input type='checkbox' class='recoverfeesCheck' name='input_{$field_id}' id='{$html_id}' value='testValue'>
 				<input type='hidden' name='input_{$field_id}.1' id='{$html_id}_1' class='gform_hidden ginput_{$this->type}_input' 
-onchange='jQuery( this ).next(\"label\").text( replaceFeesWithValue(\"{$this->{$this->type . 'Title'}}\", value));jQuery( this ).prev(\"input\").val(value)' 
+onchange='jQuery( this ).next(\"span\").text( replaceFeesWithValue(\"{$this->{$this->type . 'Title'}}\", value));jQuery( this ).prev(\"input\").val(value)' 
 data-title='{$this->{$this->type . 'Title'}}' data-amount-percent='{$this->{$this->type . 'AmountPercent'}}' data-amount-dollars='{$this->{$this->type . 'AmountDollars'}}'
 data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . json_encode( $this->{$this->type . 'Products'} ) . "' />
-				<label for='recoverFeeCheck'>{$this->{$this->type . 'Title'}}</label>
+				<span for='recoverFeeCheck'>{$this->{$this->type . 'Title'}}</span>
 		</div>
 		<script>function replaceFeesWithValue(txt, value) {
-			console.log('val====>', value);
 			var reTxt = txt;
 			if(reTxt.includes('{fees}')) {
 				reTxt = reTxt.replace('{fees}', ' ' + gformFormatMoney(value) + ' ');
@@ -69,21 +66,20 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 	}
 
 	public function add_recoverfees_to_order($order, $form, $entry) {
-
 		if(empty($order['products'])) {
 			return $order;
 		}
-		$this->_processing_order = true;
-		
 		// if ( $this->has_field_types( $form, 'recover_fees' )) {
 		// 	$this->_order = $this -> add_recoverfees( $this->_order, $form, $entry );
 		// }
 		// echo "--------------fff-----------";
 		// echo '<pre>' . var_export($entry[], true) . '</pre>';
 		$recoverfees_inputId = -1;
+		$recoverfees_label = "Recover Fees";
 		foreach ( $form['fields'] as $field ) {
 			if ( $field->type === 'recover_fees') {
 				$recoverfees_inputId = $field->id;
+				$recoverfees_label = $field->label;
 			}
 		}
 		// echo "-------------dddd-------------";
@@ -93,7 +89,7 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 		}
 
 		$order['products'][0] = array(
-			'name'     => 'Recover Fees',
+			'name'     => $recoverfees_label,
 			'price'    => $entry[$recoverfees_inputId],
 			'quantity' => 1,
 			// 'isTax'    => true
@@ -132,8 +128,8 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 					<?php _e( 'Recover Fees Amount', 'recover-fees' ); ?>
 				</span>
 			</label>
-			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'percent');" />
-			<input type="text" id="recoverfees-amount-cents" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'dollars');" />
+			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'percent');" placeholder="%"/>
+			<input type="text" id="recoverfees-amount-cents" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'dollars');" placeholder="$"/>
 		</li>
 
 		<li class="recoverfees-products-setting field_setting gp-field-setting" >
@@ -315,8 +311,5 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 		<?php
 	}
 
-	public static function recoverfees_script_load() {
-		wp_enqueue_script( 'my-custom-script', plugin_dir_url( __FILE__ ) . 'js/custom-scripts.js' );
-	}
 	
 }
