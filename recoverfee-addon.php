@@ -26,7 +26,9 @@ class GFRecoverFeesAddOn extends GFAddOn {
 
 		return self::$_instance;
 	}
-
+	public function test() {
+		return "AAAAAA";
+	}
 	/**
 	 * Handles hooks and loading of language files.
 	 */

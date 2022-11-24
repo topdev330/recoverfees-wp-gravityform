@@ -3,12 +3,13 @@ namespace recoverFees;
 class RecoverFees_Field extends \GF_Field {
 	public $type = 'recover_fees';
 	protected $_slug = 'recover_fees_slug';
-  public function run() {
+	protected $_setting_amountPercent = 0;
+	protected $_setting_mountDollars = 0;
+  public function run($addonInstance) {
+		$plugin_settings = $addonInstance->get_plugin_settings();
+		$this->_setting_amountPercent = rgar( $plugin_settings , 'recoverfees-settings-amount-percent' );
+		$this->_setting_mountDollars = rgar( $plugin_settings , 'recoverfees-settings-amount-dollars' );
 
-		add_filter( 'gform_form_settings_fields', function ( $fields, $form ) {
-			echo "--------------flddd-----------";
-			echo '<pre>' . var_export($fields, true) . '</pre>';
-	}, 10, 2 );
 		add_action( 'gform_field_standard_settings_100', array( $this, 'field_settings_ui' ) );
 		add_action( 'gform_editor_js', array( $this, 'field_settings_js' ) );
 		add_action( 'gform_product_info', array( $this, 'add_recoverfees_to_order' ), 9, 3 );
@@ -128,8 +129,8 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 					<?php _e( 'Recover Fees Amount', 'recover-fees' ); ?>
 				</span>
 			</label>
-			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'percent');" placeholder="%"/>
-			<input type="text" id="recoverfees-amount-cents" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'dollars');" placeholder="$"/>
+			<input type="text" id="recoverfees-amount-percent" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'percent');" placeholder="%" initialvalue="<?php echo $this->_setting_amountPercent ?>"/>
+			<input type="text" id="recoverfees-amount-cents" size="10" onblur="RecoverFeesFormEditor.parseAmount( this.value, this, 'dollars');" placeholder="$" initialvalue="<?php echo $this->_setting_mountDollars ?>"/>
 		</li>
 
 		<li class="recoverfees-products-setting field_setting gp-field-setting" >
@@ -172,24 +173,19 @@ data-productstype='{$this->{$this->type . 'ProductsType'}}' data-products='" . j
 						$input.val( title );
 					}, 
 					parseAmount: function( amount, elem, amountType ) {
-
 						if( typeof amount != 'string' ) {
 							amount = String( amount );
+						}
+						if(amount == '' && $(elem).attr("initialvalue")) {
+							amount = $(elem).attr("initialvalue");
 						}
 
 						var type            = GetSelectedField().type,
 							isPercentage    = type == 'recover_fees' || amount.indexOf( '%' ) != -1 || amountType == 'percent',
 							isPercentage    = amountType != 'dollars'
 							amount          = Math.abs( gformToNumber( amount ) ),
-							parsedAmount    = amount != false ? amount : 0,
+							parsedAmount    = amount != false ? amount : -1,
 							parsedAmount    = isPercentage ? Math.min( amount, 100 ) : amount;
-							if(!parsedAmount || parsedAmount == 0) {
-								if(form['recoverFees'] && form['recoverFees']['recoverfees-settings-amount-percent'] && amountType == "percent") {
-									parsedAmount = Math.min(Number(form['recoverFees']['recoverfees-settings-amount-percent']), 100)
-								} else if(form['recoverFees'] && form['recoverFees']['recoverfees-settings-amount-dollars'] && amountType == "dollars") {
-									parsedAmount = Number(form['recoverFees']['recoverfees-settings-amount-dollars'])
-								}
-							}
 
 							formattedAmount = isPercentage ? gformFormatNumber( parsedAmount, -1 ) + '%' : gformFormatMoney( parsedAmount, true ),
 							$input          = $( elem );

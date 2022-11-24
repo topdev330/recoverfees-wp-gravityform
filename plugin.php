@@ -33,7 +33,7 @@ class GF_RecoverFees_Bootstrap {
 
         require_once( 'recoverfee-field.php' );
         $recoverFees_field      = new RecoverFees_Field();
-        $recoverFees_field -> run();
+        $recoverFees_field -> run(gf_simple_addon());
     }
 
 }
