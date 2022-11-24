@@ -140,18 +140,23 @@ class GFRecoverFeesAddOn extends GFAddOn {
 	public function plugin_settings_fields() {
 		return array(
 			array(
-				'title'  => esc_html__( 'Simple Add-On Settings', 'simpleaddon' ),
+				'title'  => esc_html__( 'Recover Fees Settings', 'simpleaddon' ),
 				'fields' => array(
 					array(
-						'name'              => 'mytextbox',
-						'tooltip'           => esc_html__( 'This is the tooltip', 'simpleaddon' ),
-						'label'             => esc_html__( 'This is the label', 'simpleaddon' ),
+						'label'             => esc_html__( 'Percent', 'simpleaddon' ),
 						'type'              => 'text',
-						'class'             => 'small',
+						'name'              => 'recoverfees-settings-amount-percent',
 						'feedback_callback' => array( $this, 'is_valid_setting' ),
-					)
-				)
-			)
+					),
+					array(
+						'label'             => esc_html__( 'Dollars', 'simpleaddon' ),
+						'type'              => 'text',
+						'name'              => 'recoverfees-settings-amount-dollars',
+						'feedback_callback' => array( $this, 'is_valid_setting' ),
+					),
+					
+				),
+			),
 		);
 	}
 
@@ -166,12 +171,18 @@ class GFRecoverFeesAddOn extends GFAddOn {
 				'title'  => esc_html__( 'Recover Fees Settings', 'simpleaddon' ),
 				'fields' => array(
 					array(
-						'label'             => esc_html__( 'Fees', 'simpleaddon' ),
+						'label'             => esc_html__( 'Percent', 'simpleaddon' ),
 						'type'              => 'text',
-						'name'              => 'mytext',
-						'class'             => 'medium',
+						'name'              => 'recoverfees-settings-amount-percent',
 						'feedback_callback' => array( $this, 'is_valid_setting' ),
 					),
+					array(
+						'label'             => esc_html__( 'Dollars', 'simpleaddon' ),
+						'type'              => 'text',
+						'name'              => 'recoverfees-settings-amount-dollars',
+						'feedback_callback' => array( $this, 'is_valid_setting' ),
+					),
+					
 				),
 			),
 		);

@@ -10,6 +10,10 @@ Author URI: http://www.jhontatantopdev.com
 ------------------------------------------------------------------------
 */
 
+if ( ! class_exists( 'GFAddOn' ) ) {
+	return;
+}
+
 define( 'GF_SIMPLE_ADDON_VERSION', '2.1' );
 use recoverFees\RecoverFees_Field;
 

@@ -33,7 +33,9 @@ gform.addFilter(
     recoverfeesDom.dispatchEvent(event);
     // var productTotal = gformCalculateProductPrice( formId, productIds[i] );
 		// 		total           += productTotal;
-    recoverfeesCheckBox.onchange = function(){gformCalculateTotalPrice(formId);};
+    recoverfeesCheckBox.onchange = function(){
+      gformCalculateTotalPrice(formId);
+    };
 
     if(recoverfeesCheckBox.checked && total >  0) {
       return total + recoverfeesTotal;
@@ -43,5 +45,6 @@ gform.addFilter(
     
   }, 52
 );
+
 
 } )( jQuery );
